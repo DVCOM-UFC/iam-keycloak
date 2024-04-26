@@ -1,0 +1,46 @@
+version: '3'
+
+networks:
+  backend:
+  
+volumes:
+  dbdata:
+
+services:
+  postgres:
+    image: postgres:${POSTGRES_VERSION}
+    container_name: db_keycloak
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "keycloak"]
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:${KC_VERSION}
+    container_name: keycloak
+    #command: ["start-dev", "--import-realm"]
+    restart: unless-stopped
+    environment:
+      KC_DB: ${KC_DB}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      KC_DB_URL: ${KC_DB_URL}
+      KC_METRICS_ENABLED: true
+      KC_LOG_LEVEL: ${KC_LOG_LEVEL}
+      KC_REALM_NAME: ${KC_REALM_NAME}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    ports:
+      - ${KC_PORT}:8080
+    networks:
+      - backend
+    command: start-dev
+    depends_on:
+      - postgres
