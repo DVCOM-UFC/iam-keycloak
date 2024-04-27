@@ -1,5 +1,3 @@
-version: '3'
-
 networks:
   backend:
   
@@ -25,7 +23,6 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:${KC_VERSION}
     container_name: keycloak
-    #command: ["start-dev", "--import-realm"]
     restart: unless-stopped
     environment:
       KC_DB: ${KC_DB}
@@ -34,11 +31,15 @@ services:
       KC_DB_URL: ${KC_DB_URL}
       KC_METRICS_ENABLED: true
       KC_LOG_LEVEL: ${KC_LOG_LEVEL}
-      KC_REALM_NAME: ${KC_REALM_NAME}
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_HTTPS_CERTIFICATE_FILE: /etc/x509/https/tls.crt
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /etc/x509/https/tls.key
     ports:
-      - ${KC_PORT}:8080
+      - ${KC_HTTPS_PORT}:8443
+    volumes:  
+      - ./certs/fullchain.pem:/etc/x509/https/tls.crt"
+      - ./certs/privkey.pem:/etc/x509/https/tls.key
     networks:
       - backend
     command: start-dev
