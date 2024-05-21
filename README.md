@@ -71,13 +71,13 @@ Keycloak runs in 5000 port.
 
 # Keycloak Configuration
 
-## Create a Realm
+## 1. Create a Realm
 
 ![realm](img/realm.png)
 
 Here I have created a realm called `matrix-pici`. Once you created the realm then choose the realm after logging in. After choosing the realm do all other activities such as creating new clients and users
 
-## Create a new Client
+## 2. Create a new Client
 
 ![client1](img/client1.png)
 
@@ -87,12 +87,29 @@ Here I have created a realm called `matrix-pici`. Once you created the realm the
 
 The above three screenshots are examples of creating a client and configuring with matrix synapse callback.
 
-We have to give a valid redirect URL [synapse public baseurl]/_synapse/client/oidc/callback.
+We have to give a valid redirect URL `[synapse public baseurl]/_synapse/client/oidc/callback` and a backchannel logout URL `[synapse public baseurl]/_synapse/client/oidc/backchannel_logout`. Save!
 
-## Create users
+On the Credentials tab, update the Client Authenticator as `Client ID and Secret` and click `Regenerate Secret`. Copy the secret to use in the Synapse `homeserver.yml`!
+
+## 3. Create users
 
 Create users by clicking the Users menu. Using the same user, we can log in to our application.
 
 # Synapse configuration
 
-Open homeserver.yaml file and add the below configuration lines for SSO implementation.
+Open `homeserver.yaml` file and add the below configuration lines for SSO implementation.
+
+```yml
+oidc_providers:
+  - idp_id: keycloak
+    idp_name: "My KeyCloak server"
+    issuer: "https://[synapse public baseurl]/realms/matrix-pici"
+    client_id: "synapse"
+    client_secret: "copy secret generated from above"
+    scopes: ["openid", "profile"]
+    user_mapping_provider:
+      config:
+        localpart_template: "{{ user.preferred_username }}"
+        display_name_template: "{{ user.name }}"
+    backchannel_logout_enabled: true # Optional
+```
