@@ -79,6 +79,12 @@ Here I have created a realm called `matrix-pici`. Once you created the realm the
 
 ## Create a new Client
 
+![client1](img/client1.png)
+
+![client2](img/client2.png)
+
+![client3](img/client3.png)
+
 The above three screenshots are examples of creating a client and configuring with matrix synapse callback.
 
 We have to give a valid redirect URL [synapse public baseurl]/_synapse/client/oidc/callback.
