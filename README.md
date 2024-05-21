@@ -4,7 +4,7 @@ Keycloak is an open-source identity and access management solution. Keycloak pro
 
 # Certificate generation with Lets Encrypt
 
-1. Install certbot
+## 1. Install certbot
 
 First you will need to install certbot. This depends on the Linux distro you are using.
 
@@ -14,7 +14,7 @@ For example, for apt-based distros such as Debian or Ubuntu, you can just run th
 apt install certbot
 ```
   
-2. Create HTTPS certificates
+## 2. Create HTTPS certificates
 
 Set up certificates:
 
